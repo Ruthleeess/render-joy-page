@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      moderation_requests: {
+        Row: {
+          action_type: string
+          created_at: string
+          id: string
+          reason: string | null
+          requester_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          target_user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requester_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          id?: string
+          reason?: string | null
+          requester_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
       n8n: {
         Row: {
           created_at: string
@@ -33,7 +69,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
-          email: string | null
+          email: string
           full_name: string | null
           id: string
           updated_at: string
@@ -43,7 +79,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
-          email?: string | null
+          email: string
           full_name?: string | null
           id?: string
           updated_at?: string
@@ -53,7 +89,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
-          email?: string | null
+          email?: string
           full_name?: string | null
           id?: string
           updated_at?: string
@@ -62,15 +98,46 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "owner" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -197,6 +264,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["owner", "moderator", "user"],
+    },
   },
 } as const

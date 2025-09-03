@@ -70,11 +70,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Check if input is username (doesn't contain @)
       if (!emailOrUsername.includes('@')) {
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('email')
           .eq('username', emailOrUsername)
-          .single();
+          .maybeSingle();
+        
+        if (profileError) {
+          console.error('Profile lookup error:', profileError);
+          return { error: new Error('Error looking up username') };
+        }
         
         if (profile?.email) {
           email = profile.email;
@@ -90,6 +95,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       return { error };
     } catch (error) {
+      console.error('Sign in error:', error);
       return { error: error as Error };
     }
   };
