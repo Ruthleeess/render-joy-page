@@ -69,6 +69,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           password,
         });
         if (signInError) {
+          if (signInError.message?.toLowerCase().includes('email not confirmed')) {
+            try {
+              await supabase.auth.resend({ type: 'signup', email });
+              console.log('Resent confirmation email after signup');
+            } catch (e) {
+              console.warn('Resend confirmation after signup failed', e);
+            }
+            return { error: new Error('Email not confirmed. Disable confirmation in Supabase (Auth > Providers > Email) for instant signup/login, or check your inbox for a confirmation link.') };
+          }
           console.error('Auto sign-in after signup failed:', signInError);
           return { error: signInError };
         }
@@ -117,6 +126,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) {
         console.error('Supabase sign in error:', error);
+        if (error.message?.toLowerCase().includes('email not confirmed')) {
+          try {
+            await supabase.auth.resend({ type: 'signup', email });
+            console.log('Resent confirmation email');
+          } catch (e) {
+            console.warn('Resend confirmation failed', e);
+          }
+          return { error: new Error('Email not confirmed. Disable confirmation in Supabase (Auth > Providers > Email) for instant login, or check your inbox for a confirmation link.') };
+        }
         return { error };
       }
 

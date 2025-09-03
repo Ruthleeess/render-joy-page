@@ -41,6 +41,12 @@ const Auth = () => {
         description: error.message,
         variant: "destructive",
       });
+      if (error.message.toLowerCase().includes('email not confirmed')) {
+        toast({
+          title: "Confirmation Required",
+          description: "Disable Confirm Email in Supabase to allow instant login, or check your inbox for a confirmation link.",
+        });
+      }
     } else {
       toast({
         title: "Welcome back!",
