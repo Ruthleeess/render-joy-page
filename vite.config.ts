@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    allowedHosts: ["ascendara-nextjs-login.lf3bve.easypanel.host"],
   },
   plugins: [
     react(),
