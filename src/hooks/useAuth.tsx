@@ -61,9 +61,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error };
       }
 
-      console.log('Signup successful:', data);
-      // Note: With email confirmation disabled, user should be automatically signed in
-      // The trigger will create the profile and role automatically
+      // If email confirmation is disabled, session is returned. If not, try to auto sign in.
+      if (!data?.session) {
+        console.log('No session returned on signup; attempting auto sign-in...');
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (signInError) {
+          console.error('Auto sign-in after signup failed:', signInError);
+          return { error: signInError };
+        }
+      }
+
+      console.log('Signup (and auto sign-in if needed) completed');
       return { error: null };
     } catch (error) {
       console.error('Signup catch error:', error);
