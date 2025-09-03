@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       // Check if input is username (doesn't contain @)
       if (!emailOrUsername.includes('@')) {
+        console.log('Looking up username:', emailOrUsername);
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('email')
@@ -86,19 +87,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         if (profile?.email) {
           email = profile.email;
+          console.log('Found email for username:', email);
         } else {
+          console.log('Username not found in profiles');
           return { error: new Error('Username not found') };
         }
       }
 
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('Attempting sign in with email:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      return { error };
+      if (error) {
+        console.error('Supabase sign in error:', error);
+        return { error };
+      }
+
+      console.log('Sign in successful:', data);
+      return { error: null };
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Sign in catch error:', error);
       return { error: error as Error };
     }
   };
