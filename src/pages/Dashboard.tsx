@@ -9,6 +9,7 @@ import { LogOut, Users, Shield, Crown, UserMinus, Ban, Mail } from 'lucide-react
 import { toast } from '@/hooks/use-toast';
 import UserManagement from '@/components/UserManagement';
 import ModerationRequests from '@/components/ModerationRequests';
+import { motion } from 'framer-motion';
 
 interface UserProfile {
   id: string;
@@ -127,29 +128,62 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20">
-      <header className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-background to-secondary/20"
+    >
+      <motion.header 
+        className="bg-white/80 backdrop-blur-sm border-b sticky top-0 z-10"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+      >
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <h1 className="text-2xl font-bold">Dashboard</h1>
             {userRole && (
-              <Badge className={`${getRoleColor(userRole)} text-white flex items-center space-x-1`}>
-                {getRoleIcon(userRole)}
-                <span className="capitalize">{userRole}</span>
-              </Badge>
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.4, duration: 0.3 }}
+              >
+                <Badge className={`${getRoleColor(userRole)} text-white flex items-center space-x-1`}>
+                  {getRoleIcon(userRole)}
+                  <span className="capitalize">{userRole}</span>
+                </Badge>
+              </motion.div>
             )}
           </div>
-          <Button onClick={handleSignOut} variant="outline" size="sm">
-            <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
-          </Button>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button onClick={handleSignOut} variant="outline" size="sm">
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          </motion.div>
         </div>
-      </header>
+      </motion.header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <motion.div 
+          className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
           {/* Profile Card */}
-          <Card>
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.4 }}
+            whileHover={{ y: -5 }}
+          >
+            <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Users className="h-5 w-5" />
@@ -170,11 +204,18 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+          </motion.div>
 
           {/* Features based on role */}
           {userRole === 'owner' && (
             <>
-              <Card>
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                whileHover={{ y: -5 }}
+              >
+                <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
                     <Crown className="h-5 w-5" />
@@ -191,11 +232,18 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+              </motion.div>
             </>
           )}
 
           {userRole === 'moderator' && (
-            <Card>
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+              whileHover={{ y: -5 }}
+            >
+              <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Shield className="h-5 w-5" />
@@ -212,24 +260,35 @@ const Dashboard = () => {
                 </div>
               </CardContent>
             </Card>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* User Management Section */}
         {(userRole === 'owner' || userRole === 'moderator') && (
-          <div className="mt-8">
+          <motion.div 
+            className="mt-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+          >
             <UserManagement userRole={userRole} />
-          </div>
+          </motion.div>
         )}
 
         {/* Moderation Requests Section */}
         {userRole === 'owner' && (
-          <div className="mt-8">
+          <motion.div 
+            className="mt-8"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+          >
             <ModerationRequests />
-          </div>
+          </motion.div>
         )}
       </main>
-    </div>
+    </motion.div>
   );
 };
 
