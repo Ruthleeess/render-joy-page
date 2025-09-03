@@ -43,7 +43,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      console.log('Starting signup with email:', email);
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -60,6 +61,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return { error };
       }
 
+      console.log('Signup successful:', data);
+      // Note: With email confirmation disabled, user should be automatically signed in
+      // The trigger will create the profile and role automatically
       return { error: null };
     } catch (error) {
       console.error('Signup catch error:', error);
